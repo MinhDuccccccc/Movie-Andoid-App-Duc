@@ -16,16 +16,12 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.movieapp.Domain.FilmItem;
 import com.example.movieapp.Domain.ListFilm;
 import com.example.movieapp.R;
-import com.example.movieapp.Domain.SliderItems;
 import com.example.movieapp.activities.DetailActivity;
 
-import java.util.List;
 
 public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderViewHolder> {
 
@@ -61,7 +57,6 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
                         items.getItems().get(position).getThumbUrl() :
                         items.getItems().get(position).getPosterUrl())
                 .apply(new RequestOptions()
-                        .override(600, 400)
                         .transform(new CenterCrop(), new RoundedCorners(60)))
                 .into(holder.imageView);
         Log.d("SliderAdapters", "Finished loading image at position: " + position);
