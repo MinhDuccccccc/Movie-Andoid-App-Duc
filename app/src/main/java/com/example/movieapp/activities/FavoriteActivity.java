@@ -27,16 +27,19 @@ public class FavoriteActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.explore) {
                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 finish();
                 return true;
             } else if (itemId == R.id.favorite) {
                 return true;
             } else if (itemId == R.id.recent) {
                 startActivity(new Intent(getApplicationContext(), RecentActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             } else if (itemId == R.id.profile) {
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }

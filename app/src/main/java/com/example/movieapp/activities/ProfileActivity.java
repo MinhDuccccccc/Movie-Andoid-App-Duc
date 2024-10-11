@@ -26,14 +26,17 @@ public class ProfileActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.explore) {
                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 finish();
                 return true;
             } else if (itemId == R.id.favorite) {
                 startActivity(new Intent(getApplicationContext(), FavoriteActivity.class));
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 finish();
                 return true;
             } else if (itemId == R.id.recent) {
                 startActivity(new Intent(getApplicationContext(), RecentActivity.class));
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 finish();
                 return true;
             } else if (itemId == R.id.profile) {

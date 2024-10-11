@@ -4,6 +4,7 @@ package com.example.movieapp.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.movieapp.Domain.FilmItem;
@@ -52,13 +54,18 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(60));
 
-        // Sử dụng Glide để tải ảnh từ URL
+        // Sử dụng Glide để tải ảnh từ URL và đặt kích thước cố định
+        Log.d("SliderAdapters", "Start loading image at position: " + position);
         Glide.with(context)
                 .load(items.getItems().get(position).getThumbUrl().equals(" ") ?
                         items.getItems().get(position).getThumbUrl() :
                         items.getItems().get(position).getPosterUrl())
-                .apply(requestOptions)
+                .apply(new RequestOptions()
+                        .override(600, 400)
+                        .transform(new CenterCrop(), new RoundedCorners(60)))
                 .into(holder.imageView);
+        Log.d("SliderAdapters", "Finished loading image at position: " + position);
+
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -71,10 +78,11 @@ public class SliderAdapters extends RecyclerView.Adapter<SliderAdapters.SliderVi
             }
         });
 
-        if(position == items.getItems().size() - 2){
+        if (position == items.getItems().size() - 2) {
             viewPager2.post(runnable);
         }
     }
+
 
     @Override
     public int getItemCount() {

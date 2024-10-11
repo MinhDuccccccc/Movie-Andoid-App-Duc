@@ -315,14 +315,17 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.favorite) {
                 startActivity(new Intent(getApplicationContext(), FavoriteActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             } else if (itemId == R.id.recent) {
                 startActivity(new Intent(getApplicationContext(), RecentActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             } else if (itemId == R.id.profile) {
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
             }
