@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.movieapp.R;
 import com.example.movieapp.adapters.filmPagerAdapter;
+import com.example.movieapp.network.NetworkUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -32,6 +33,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         slugFilm = getIntent().getStringExtra("slug");
+        boolean isConnected = NetworkUtils.checkConnection(this);
 
         initView();
     }

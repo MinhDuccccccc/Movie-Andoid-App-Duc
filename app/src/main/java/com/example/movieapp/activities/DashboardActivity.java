@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -42,6 +44,7 @@ import com.example.movieapp.adapters.FilmListAdapter;
 import com.example.movieapp.adapters.LoaiPhimAdapter;
 import com.example.movieapp.adapters.SliderAdapters;
 import com.example.movieapp.Domain.SliderItems;
+import com.example.movieapp.network.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -52,6 +55,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DashboardActivity extends AppCompatActivity {
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private FilmListAdapter adapterBestMovies, adapterUpcoming;
     private CategoryListAdapter adapterCategory;
@@ -65,18 +69,39 @@ public class DashboardActivity extends AppCompatActivity {
     private ProgressBar loading, loading2, loading3, loading4, loading5;
     private ViewPager2 viewPager2;
     private Handler slideHandler = new Handler();
+    private boolean isConnected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
+        isConnected = NetworkUtils.checkConnection(this);
+        if (isConnected) {
+            initView ();
+            banners();
+            sendRequestBestMovies();
+            sendRequestUpComing();
+            sendRequestCategory();
+        } else {
+            // Gọi initView() để thiết lập các view
+            initView();
+
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+    }
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            isConnected = NetworkUtils.checkConnection(DashboardActivity.this);
+            initView ();
+            banners();
+            sendRequestBestMovies();
+            sendRequestUpComing();
+            sendRequestCategory();
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
 
-        initView ();
-        banners();
-        sendRequestBestMovies();
-        sendRequestUpComing();
-        sendRequestCategory();
 
     }
 
@@ -353,9 +378,14 @@ public class DashboardActivity extends AppCompatActivity {
         itemList.add(new LoaiPhim("Hoạt Hình",R.drawable.hoathinh, "hoat-hinh"));
         itemList.add(new LoaiPhim("TV Show",R.drawable.tvshow, "tv-shows"));
 
-        //gán vao adapter
-        loaiPhimAdapter = new LoaiPhimAdapter(this, itemList);
-        recyclerViewLoaiPhim.setAdapter(loaiPhimAdapter);
-        loading4.setVisibility(View.GONE);
+
+        if(isConnected){
+            loaiPhimAdapter = new LoaiPhimAdapter(this, itemList);
+            recyclerViewLoaiPhim.setAdapter(loaiPhimAdapter);
+            loading4.setVisibility(View.GONE);
+        }
+        else{
+            loading4.setVisibility(View.VISIBLE);
+        }
     }
 }

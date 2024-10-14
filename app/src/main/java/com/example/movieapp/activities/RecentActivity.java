@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.movieapp.R;
+import com.example.movieapp.network.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RecentActivity extends AppCompatActivity {
@@ -14,6 +15,7 @@ public class RecentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recent);
+        boolean isConnected = NetworkUtils.checkConnection(this);
 
 
 

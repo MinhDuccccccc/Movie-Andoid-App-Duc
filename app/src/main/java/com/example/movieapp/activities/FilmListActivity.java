@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.movieapp.Domain.TheLoaiPhim;
 import com.example.movieapp.R;
 import com.example.movieapp.adapters.TheLoaiPhimAdapter;
+import com.example.movieapp.network.NetworkUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -54,6 +55,7 @@ public class FilmListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_list);
+        boolean isConnected = NetworkUtils.checkConnection(this);
 
         apiUrl = getIntent().getStringExtra("apiUrl");
         recyclerView = findViewById(R.id.listPhimRecycleView);

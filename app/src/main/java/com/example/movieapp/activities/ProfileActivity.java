@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.movieapp.R;
+import com.example.movieapp.network.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -18,6 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        boolean isConnected = NetworkUtils.checkConnection(this);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomBar);
         bottomNavigationView.setSelectedItemId(R.id.profile);
