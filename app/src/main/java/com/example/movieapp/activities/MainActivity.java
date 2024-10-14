@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isConnected = NetworkUtils.checkConnection(this);
+        if (!isConnected) {
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+        }
         setContentView(R.layout.activity_main);
         // Thiết lập thông báo hàng ngày vào lúc 5 PM
         NotificationChannel();

@@ -32,51 +32,84 @@
                 android:textSize="50sp"
                 />
 
-            <EditText
-                android:id="@+id/editTextEmail"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:hint="UserName"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:ems="10"
-                android:background="@drawable/edittext_background"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="128dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:inputType="text"/>
-
-            <EditText
-                android:id="@+id/editTextPass"
-                android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:hint="Password"
-                android:textAlignment="center"
-                android:textColor="@color/white"
                 android:textColorHint="@color/white"
-                android:ems="10"
-                android:background="@drawable/edittext_background"
+                app:hintTextColor="@color/white"
+                app:boxStrokeColor="@color/white"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:hint="UserName"
+                    android:textAlignment="viewStart"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:paddingStart="16dp"
+                    android:background="@drawable/edittext_background"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:inputType="text"/>
-
-
-            <EditText
-                android:id="@+id/editTextConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:hint="Confirm Password"
-                android:textAlignment="center"
-                android:textColor="@color/white"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/white"
                 android:textColorHint="@color/white"
-                android:ems="10"
-                android:background="@drawable/edittext_background"
+                app:hintTextColor="@color/white"
+                app:boxStrokeColor="@color/white"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/editTextPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:hint="Password"
+                    android:textSize="16sp"
+                    android:paddingStart="16dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:background="@drawable/edittext_background"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:inputType="text"/>
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/white"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
+                app:boxStrokeColor="@color/white"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/editTextConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:hint="Confirm Password"
+                    android:textSize="16sp"
+                    android:paddingStart="16dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:background="@drawable/edittext_background"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <ProgressBar
@@ -106,7 +139,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:layout_marginTop="16sp"
+                android:layout_marginTop="32sp"
+                android:layout_marginBottom="32dp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="16sp"

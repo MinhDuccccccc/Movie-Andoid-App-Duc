@@ -2,6 +2,7 @@ package com.example.movieapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +21,10 @@ public class FavoriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
         boolean isConnected = NetworkUtils.checkConnection(this);
-
+        if (!isConnected) {
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomBar);
         bottomNavigationView.setSelectedItemId(R.id.favorite);

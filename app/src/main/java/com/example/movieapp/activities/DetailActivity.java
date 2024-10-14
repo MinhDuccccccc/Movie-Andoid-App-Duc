@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -34,7 +35,10 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         slugFilm = getIntent().getStringExtra("slug");
         boolean isConnected = NetworkUtils.checkConnection(this);
-
+        if (!isConnected) {
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+        }
         initView();
     }
 

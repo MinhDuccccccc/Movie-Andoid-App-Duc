@@ -26,6 +26,10 @@ public class VideoPlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isConnected = NetworkUtils.checkConnection(this);
+        if (!isConnected) {
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 

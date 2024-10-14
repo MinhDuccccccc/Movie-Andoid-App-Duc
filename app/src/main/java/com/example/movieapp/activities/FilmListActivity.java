@@ -56,6 +56,10 @@ public class FilmListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_list);
         boolean isConnected = NetworkUtils.checkConnection(this);
+        if (!isConnected) {
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         apiUrl = getIntent().getStringExtra("apiUrl");
         recyclerView = findViewById(R.id.listPhimRecycleView);

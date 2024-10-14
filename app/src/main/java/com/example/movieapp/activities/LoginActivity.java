@@ -68,6 +68,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         boolean isConnected = NetworkUtils.checkConnection(this);
+        if (!isConnected) {
+            // Hiển thị thông báo không có kết nối internet
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
+        }
         mAuth = FirebaseAuth.getInstance();
 
 

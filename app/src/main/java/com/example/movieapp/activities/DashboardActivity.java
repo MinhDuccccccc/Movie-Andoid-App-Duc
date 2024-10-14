@@ -88,7 +88,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             // Hiển thị thông báo không có kết nối internet
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
-    }
+        }
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
