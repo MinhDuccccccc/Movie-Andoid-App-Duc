@@ -30,13 +30,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.w3c.dom.Text;
+
 public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     EditText editTextEmail, editTextPass;
-    TextView textViewToRegister;
+    TextView textViewToRegister, forgotPass;
     ProgressBar progressBar;
     Button buttonLogin;
+    private String email;
 
     @Override
     public void onStart() {
@@ -80,11 +83,25 @@ public class LoginActivity extends AppCompatActivity {
         textViewToRegister = findViewById(R.id.textView8);
         progressBar = findViewById(R.id.progressBar);
         buttonLogin = findViewById(R.id.button2);
+        forgotPass = findViewById(R.id.forgotPass);
+
+
+        email = getIntent().getStringExtra("Email");
+        editTextEmail.setText(!TextUtils.isEmpty(email) ? email : null);
 
         textViewToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPassActivity.class);
                 startActivity(intent);
                 finish();
             }

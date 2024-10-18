@@ -8,7 +8,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:layout_height="match_parent"
-    tools:context=".activities.LoginActivity">
+    tools:context=".activities.ForgotPassActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="Forgot Pass"
                 android:textColor="@color/white"
                 android:layout_marginTop="28dp"
                 android:layout_marginStart="32dp"
@@ -32,10 +32,24 @@
                 android:textSize="50sp"
                 />
 
+            <TextView
+                android:id="@+id/forgotPass"
+                android:layout_width="wrap_content"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:layout_height="wrap_content"
+                android:text="Provide your email account you've been registered to reset password"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:layout_marginTop="136dp"
+                />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="128dp"
+                android:layout_marginTop="28dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:textColorHint="@color/white"
@@ -44,10 +58,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <EditText
-                    android:id="@+id/editTextText"
+                    android:id="@+id/editTextEmail"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
-                    android:hint="UserName"
+                    android:hint="Enter your email"
                     android:textAlignment="viewStart"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
@@ -57,48 +71,10 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                app:endIconMode="password_toggle"
-                app:endIconTint="@color/white"
-                android:textColorHint="@color/white"
-                app:hintTextColor="@color/white"
-                app:boxStrokeColor="@color/white"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <EditText
-                    android:id="@+id/editTextPass"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:hint="Password"
-                    android:textSize="16sp"
-                    android:paddingStart="16dp"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:background="@drawable/edittext_background"
-                    android:inputType="textPassword" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-
-            <TextView
-                android:id="@+id/forgotPass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forget your password ?"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:layout_marginTop="36dp"/>
 
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/progressBarReset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -106,9 +82,9 @@
                 />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button2"
+                android:id="@+id/sendEmailBtn"
                 style="@android:style/Widget.Button"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/orange_button_background"
@@ -116,27 +92,9 @@
                 android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login" />
+                android:text="Send Email" />
 
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textAlignment="center"
-                android:layout_marginTop="32sp"
-                android:text="Don't have account ?" />
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="Register Now" />
         </LinearLayout>
 
     </ScrollView>

@@ -22,7 +22,6 @@ public class FavoriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_favorite);
         boolean isConnected = NetworkUtils.checkConnection(this);
         if (!isConnected) {
-            // Hiển thị thông báo không có kết nối internet
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
         }
 
