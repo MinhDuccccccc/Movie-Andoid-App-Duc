@@ -29,8 +29,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         // Tạo một PendingIntent từ Intent vừa tạo
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                context, 0, repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                context,
+                0,
+                repeatingIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
+
 
         // Tạo thông báo
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.intro_pic);
@@ -43,9 +47,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.btn_4)
                 .setLargeIcon(bitmap)
                 .setContentTitle("Chào buổi sáng ngày "+day+"/"+month)
-                .setContentText("Chúc Mạnh Cường một ngày mới tốt lành !")  // Nội dung thông báo
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)  // Đặt mức độ ưu tiên cho thông báo
-                .setAutoCancel(true);  // Tự động hủy thông báo khi nhấn vào
+                .setContentText("Chúc Cường một ngày mới tốt lành !")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true); 
 
         // Lấy NotificationManager để quản lý việc gửi thông báo
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

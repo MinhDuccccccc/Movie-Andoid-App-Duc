@@ -24,6 +24,6 @@ public class NotificationOpen extends AppCompatActivity {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH) + 1;
 
-        txt.setText("Chào mừng ngày mới " +day+"/"+month+", chúc Mạnh Cường có một ngày làm việc hiệu quả ❤\uFE0F❤\uFE0F❤\uFE0F");
+        txt.setText("Chào mừng ngày mới " +day+"/"+month+", chúc Cường có một ngày làm việc hiệu quả ❤\uFE0F❤\uFE0F❤\uFE0F");
     }
 }
