@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -51,6 +53,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -62,6 +65,7 @@ public class DashboardActivity extends AppCompatActivity {
     private RecyclerView recyclerViewBestMovies, recyclerViewCategory, recyclerViewUpcoming, recyclerViewLoaiPhim;
     private LoaiPhimAdapter loaiPhimAdapter;
     private List<LoaiPhim> itemList;
+    private TextView upComingDetail, bestMoviesDetail;
 
 
     private RequestQueue mRequestQueue;
@@ -159,11 +163,9 @@ public class DashboardActivity extends AppCompatActivity {
         // Lấy giá trị ngày hiện tại từ SharedPreferences
         SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         int maxPage = preferences.getInt("maxPage", 1500); // Mặc định là 1500
+        int page = maxPage - 1;
 
-        // Tạo giá trị page ngẫu nhiên
-        Random random = new Random();
-        int page = random.nextInt(maxPage) + 1;
-        Log.d("Page", String.valueOf(page));
+        Log.d("MaxPage", String.valueOf(maxPage));
 
 
         mStringRequest = new StringRequest(Request.Method.GET, "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page="+page, s -> {
@@ -187,17 +189,21 @@ public class DashboardActivity extends AppCompatActivity {
         mRequestQueue.add(mStringRequest);
 
 
-        // Tăng giá trị maxPage mỗi ngày
-        long lastUpdated = preferences.getLong("lastUpdated", 0);
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastUpdated > 24 * 60 * 60 * 1000) { // Kiểm tra xem đã qua 1 ngày hay chưa
-            maxPage++;
+        // Lấy giá trị ngày cuối cùng được lưu trong SharedPreferences
+        int lastUpdatedDay = preferences.getInt("lastUpdatedDay", -1);
+        Calendar calendar = Calendar.getInstance();
+        int currentDay = calendar.get(Calendar.DAY_OF_YEAR);
+
+        if (currentDay != lastUpdatedDay) {
+            maxPage++; // Tăng maxPage lên 1
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt("maxPage", maxPage);
-            editor.putLong("lastUpdated", currentTime);
+            editor.putInt("lastUpdatedDay", currentDay);
             editor.apply();
         }
 
+
+        Log.d("MaxPage", String.valueOf(maxPage));
     }
 
 
@@ -330,6 +336,24 @@ public class DashboardActivity extends AppCompatActivity {
         recyclerViewCategory = findViewById(R.id.view2);
         recyclerViewUpcoming = findViewById(R.id.view3);
         recyclerViewLoaiPhim = findViewById(R.id.view4);
+        upComingDetail = findViewById(R.id.upComingDetail);
+        bestMoviesDetail = findViewById(R.id.bestMoviesDetail);
+
+        upComingDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, FilmListExpandActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bestMoviesDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, BestMovieExpandActivity.class);
+                startActivity(intent);
+            }
+        });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomBar);
         bottomNavigationView.setSelectedItemId(R.id.explore);

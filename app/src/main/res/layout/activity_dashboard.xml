@@ -146,17 +146,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/categoryDetail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:text="Category Details"
-                        android:textColor="@color/yellow"
-                        android:textSize="14sp" />
+
 
                 </LinearLayout>
 
