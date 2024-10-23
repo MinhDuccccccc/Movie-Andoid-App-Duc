@@ -100,13 +100,4 @@ public class RegisterActivity extends AppCompatActivity {
                     });
         });
     }
-
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        finish();
-    }
 }
