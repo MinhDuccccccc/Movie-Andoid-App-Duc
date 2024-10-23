@@ -3,14 +3,28 @@ package com.example.movieapp.activities;
 
 import static androidx.core.content.ContentProviderCompat.requireContext;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +36,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,7 +48,9 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.movieapp.Domain.FilmItem;
@@ -43,13 +60,19 @@ import com.example.movieapp.Domain.LoaiPhim;
 import com.example.movieapp.R;
 import com.example.movieapp.adapters.CategoryListAdapter;
 import com.example.movieapp.adapters.FilmListAdapter;
+import com.example.movieapp.adapters.FilmdtoAdapter;
 import com.example.movieapp.adapters.LoaiPhimAdapter;
 import com.example.movieapp.adapters.SliderAdapters;
 import com.example.movieapp.Domain.SliderItems;
+import com.example.movieapp.dto.FilmDTO;
 import com.example.movieapp.network.NetworkUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -74,11 +97,24 @@ public class DashboardActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private Handler slideHandler = new Handler();
     private boolean isConnected;
+
+
+    //search Activity
+    private EditText editTextSearch;
+    private RecyclerView recyclerViewSuggestions;
+    private FilmdtoAdapter adapter;
+    private List<FilmDTO> filmDTOs; // Danh sách FilmDTO chứa dữ liệu phim
+    private LinearLayout mainLayout;
+    private ScrollView scrollView;
+    // Khởi tạo Handler cho debounce
+    private Handler searchHandler = new Handler();
+    private Runnable searchRunnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
+
         isConnected = NetworkUtils.checkConnection(this);
         if (isConnected) {
             initView ();
@@ -87,14 +123,11 @@ public class DashboardActivity extends AppCompatActivity {
             sendRequestUpComing();
             sendRequestCategory();
         } else {
-            // Gọi initView() để thiết lập các view
             initView();
-
-            // Hiển thị thông báo không có kết nối internet
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show();
         }
+//        refresh layout
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isConnected = NetworkUtils.checkConnection(DashboardActivity.this);
             initView ();
@@ -102,13 +135,12 @@ public class DashboardActivity extends AppCompatActivity {
             sendRequestBestMovies();
             sendRequestUpComing();
             sendRequestCategory();
+            clearSearchSuggestion();
             swipeRefreshLayout.setRefreshing(false);
         });
-
-
-
     }
 
+    //back btn device
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -205,7 +237,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         Log.d("MaxPage", String.valueOf(maxPage));
     }
-
 
 
     private void sendRequestCategory() {
@@ -327,9 +358,13 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        clearSearchSuggestion();
         slideHandler.postDelayed(sliderRunnable, 2000);
     }
 
+
+
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         viewPager2 = findViewById(R.id.viewPagerSlider);
         recyclerViewBestMovies = findViewById(R.id.view1);
@@ -338,7 +373,7 @@ public class DashboardActivity extends AppCompatActivity {
         recyclerViewLoaiPhim = findViewById(R.id.view4);
         upComingDetail = findViewById(R.id.upComingDetail);
         bestMoviesDetail = findViewById(R.id.bestMoviesDetail);
-
+//        upcoming detail
         upComingDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -346,7 +381,7 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+//        best movie detail
         bestMoviesDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -355,6 +390,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+//        click bottom bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomBar);
         bottomNavigationView.setSelectedItemId(R.id.explore);
 
@@ -383,7 +419,127 @@ public class DashboardActivity extends AppCompatActivity {
 
 
 
+        // Ánh xạ các view cho search
+        editTextSearch = findViewById(R.id.editTextSearch);
+        recyclerViewSuggestions = findViewById(R.id.recyclerViewSuggestions);
+        mainLayout = findViewById(R.id.mainActivity);
+        scrollView = findViewById(R.id.scrollView);
 
+        filmDTOs = new ArrayList<>();
+        adapter = new FilmdtoAdapter(this, filmDTOs);
+        recyclerViewSuggestions.setLayoutManager(new LinearLayoutManager(this));
+        // Thêm DividerItemDecoration
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewSuggestions.getContext(),
+                new LinearLayoutManager(this).getOrientation());
+        recyclerViewSuggestions.addItemDecoration(dividerItemDecoration);
+        //set adapter
+        recyclerViewSuggestions.setAdapter(adapter);
+
+//        scroll recycleView suggest search and no swipeRefreshLayout
+        recyclerViewSuggestions.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy != 0) {
+                    swipeRefreshLayout.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    swipeRefreshLayout.setEnabled(true);
+                }
+            }
+        });
+        // touchInParentLayout
+        mainLayout.setOnTouchListener((v, event) -> {
+            clearSearchSuggestion();
+            return true;
+        });
+
+        //srollView and hide suggestion search
+        // >= API 23
+        scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                // Kiểm tra nếu người dùng đang cuộn
+                if (scrollY != oldScrollY) {
+                    clearSearchSuggestion();
+                }
+            }
+        });
+
+
+
+
+        //enter or search in editext
+        editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+
+
+                    String keySearch = editTextSearch.getText().toString().trim();
+
+                    if (!TextUtils.isEmpty(keySearch)) {
+
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0); // Ẩn bàn phím
+
+                        Intent intent = new Intent(DashboardActivity.this, SearchActivity.class);
+                        intent.putExtra("keySearch", keySearch);
+                        startActivity(intent);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+
+
+        //fetch data and show in recycleView suggestion
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Nếu có runnable đang chờ, xóa nó đi
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+
+                // Tạo runnable mới
+                searchRunnable = () -> {
+                    // Kiểm tra nếu từ khóa không rỗng
+                    if (charSequence.length() > 0) {
+                        recyclerViewSuggestions.setVisibility(View.VISIBLE);
+
+                        fetchFilms(charSequence.toString());
+                    } else {
+                        filmDTOs.clear();
+                        adapter.notifyDataSetChanged();
+                        recyclerViewSuggestions.setVisibility(View.GONE);
+                    }
+                };
+
+                // Gọi runnable sau 100ms
+                searchHandler.postDelayed(searchRunnable, 100);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+
+
+        //init recycleView
         recyclerViewBestMovies.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCategory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -403,6 +559,7 @@ public class DashboardActivity extends AppCompatActivity {
         itemList.add(new LoaiPhim("TV Show",R.drawable.tvshow, "tv-shows"));
 
 
+        //check connection theloaiphim
         if(isConnected){
             loaiPhimAdapter = new LoaiPhimAdapter(this, itemList);
             recyclerViewLoaiPhim.setAdapter(loaiPhimAdapter);
@@ -412,4 +569,65 @@ public class DashboardActivity extends AppCompatActivity {
             loading4.setVisibility(View.VISIBLE);
         }
     }
+
+
+    private void fetchFilms(String keyword) {
+        mRequestQueue = Volley.newRequestQueue(this);
+        String url = "https://phimapi.com/v1/api/tim-kiem?keyword=" + keyword;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONObject data = response.getJSONObject("data");
+                        JSONArray items = data.getJSONArray("items");
+
+                        // Tạo danh sách tạm thời để lưu FilmDTOs
+                        List<FilmDTO> newFilmDTOs = new ArrayList<>();
+
+                        // Duyệt qua từng item trong items
+                        for (int i = 0; i < items.length(); i++) {
+                            JSONObject film = items.getJSONObject(i);
+                            String name = film.getString("name");
+                            String originName = film.getString("origin_name");
+                            String slug = film.getString("slug");
+
+                            // Tạo FilmDTO và thêm vào danh sách tạm
+                            FilmDTO filmDTO = new FilmDTO(name, slug, originName, null, null);
+                            newFilmDTOs.add(filmDTO);
+                        }
+
+                        // Cập nhật danh sách filmDTOs
+                        filmDTOs.clear();
+                        filmDTOs.addAll(newFilmDTOs);
+
+                        // Cập nhật RecyclerView
+                        adapter.notifyDataSetChanged();
+
+                        if (filmDTOs.isEmpty()) {
+                            recyclerViewSuggestions.setVisibility(View.GONE);
+                        } else {
+                            recyclerViewSuggestions.setVisibility(View.VISIBLE);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    // Xử lý lỗi ở đây
+                    error.printStackTrace();
+                });
+
+        // Thêm yêu cầu vào hàng đợi
+        mRequestQueue.add(jsonObjectRequest);
+    }
+
+
+
+    private void clearSearchSuggestion() {
+        editTextSearch.clearFocus();
+        recyclerViewSuggestions.setVisibility(View.GONE);
+    }
+
+
 }

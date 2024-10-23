@@ -21,29 +21,54 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
-            android:id="@+id/scrollView2"
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/mainActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/editTextText2"
+                    <!-- Thanh tìm kiếm EditText -->
+                    <EditText
+                        android:id="@+id/editTextSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="0dp"
+                        android:background="@drawable/edittext_background"
+                        android:drawableStart="@drawable/search"
+                        android:drawableEnd="@drawable/microphone"
+                        android:drawablePadding="8dp"
+                        android:ems="10"
+                        android:hint="Search movie..."
+                        android:inputType="text"
+                        android:textColor="@color/white"
+                        android:padding="12dp"
+                        android:textColorHint="@color/white" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSuggestions"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:drawableStart="@drawable/search"
-                    android:drawableEnd="@drawable/microphone"
-                    android:drawablePadding="8dp"
-                    android:ems="10"
-                    android:hint="Search movie..."
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColorHint="@color/white" />
+                    android:layout_height="200dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:visibility="gone"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@android:color/white"
+                    android:elevation="10dp"/>
+
+
+
+
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

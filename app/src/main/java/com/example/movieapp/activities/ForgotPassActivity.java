@@ -30,13 +30,6 @@ public class ForgotPassActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     String email;
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(ForgotPassActivity.this, LoginActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        finish();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
